@@ -40,13 +40,13 @@ def main():
     print("---TEST---")
     print(f"part 1: {s.part1()}")
     print(f"part 2: {s.part2()}")
-    print(f"part 2: {s.part3()}\n")
+    print(f"part 3: {s.part3()}\n")
     
     s = Solution()
     print("---MAIN---")
     print(f"part 1: {s.part1()}")
     print(f"part 2: {s.part2()}")
-    print(f"part 2: {s.part3()}\n")
+    print(f"part 3: {s.part3()}\n")
     
     print(f"\nTotal time: {time.perf_counter() - start : .4f} sec")
     
