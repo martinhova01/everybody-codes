@@ -1,4 +1,6 @@
 import time
+import threading
+import copy
 
 class Solution():
     def __init__(self, test=False):
@@ -37,22 +39,44 @@ class Solution():
         for word in words:
             all_words.append(word[::-1])
             
-        used = set()
-        for word in all_words:
+        all_words_copy = copy.deepcopy(all_words)
+        text_copy = copy.deepcopy(text)
             
+        used1 = set()
+        used2 = set() 
+            
+        t1 = threading.Thread(target=calculate, args=(all_words, text, used1, 0))
+        t2 = threading.Thread(target=calculate, args=(all_words_copy, text_copy, used2, 1))    
+        
+        t1.start()
+        t2.start()
+        
+        t1.join()
+        t2.join()
+        
+        return len(used1.union(used2))
+    
+    
+def calculate(all_words, text, used: set, threadnr: int):
+    
+    for word in all_words:
+        
+        if threadnr == 0:
+        
             #horizontal
             for y in range(len(text)):
                 for x in range(len(text[y])):
                     if all(text[y][(x + i) % len(text[y])] == word[i] for i in range(len(word))):
                         used.update(((x + i) % len(text[y]), y) for i in range(len(word)))
+        
+        else: 
             
             #vertical
             for x in range(len(text[0])):
                 for y in range(len(text) - len(word) + 1):
                     if all(text[y + i][x] == word[i] for i in range(len(word))):
                         used.update((x, y + i) for i in range(len(word)))
-                            
-        return len(used)
+                      
                               
     
 def main():
