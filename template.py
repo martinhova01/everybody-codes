@@ -10,7 +10,7 @@ import copy
 
 import sys
 sys.path.append("../..")
-from utils import adjacent4, adjacent8, directions4, directions8
+from utils import adjacent4, adjacent8, directions4, directions8, manhattanDist
 
 
 class Solution():
