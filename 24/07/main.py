@@ -3,7 +3,7 @@ import itertools
 from collections import deque
 from tqdm import tqdm
 import numpy as np
-
+import math
 import sys
 sys.path.append("../..")
 from utils import adjacent4
@@ -97,7 +97,7 @@ class Solution():
     def simulate(self, plan, track_string) -> int:
         s = 0
         curr = 10
-        for i in range(len(track_string) * 2024):
+        for i in range(math.lcm(len(track_string), len(plan))):
             op_track = track_string[i % len(track_string)]
             op_plan = plan[i % len(plan)]
             if op_track == "+":
