@@ -1,6 +1,5 @@
 import time
-import re
-import itertools
+from itertools import permutations
 from functools import lru_cache
 
 
@@ -12,7 +11,7 @@ class Solution:
         filename = f"testinput{part}.txt" if self.test else f"input{part}.txt"
         return open(filename).read()
 
-    @lru_cache()
+    @lru_cache(maxsize=None)
     def run(self, start_slot: int, token: str) -> int:
         x, y = start_slot * 2, -1
         direction_index = 0
@@ -61,11 +60,12 @@ class Solution:
     def part2(self):
         data = self.read_data(2)
         self.grid, tokens = self.parse(data)
+        slot_num = len(self.grid[0]) // 2 + 1
 
         s = 0
         for token in tokens:
             best = 0
-            for i in range(len(self.grid[0]) // 2 + 1):
+            for i in range(slot_num):
                 best = max(best, self.run(i, token))
             s += best
         return s
@@ -73,18 +73,13 @@ class Solution:
     def part3(self):
         data = self.read_data(3)
         self.grid, tokens = self.parse(data)
+        slot_num = len(self.grid[0]) // 2 + 1
 
         worst, best = float("inf"), 0
-        assignments = []
-        for comb in itertools.permutations(
-            range(len(self.grid[0]) // 2 + 1), len(tokens)
-        ):
-            assignments.append(dict(zip(tokens, comb)))
-
-        for assignment in assignments:
+        for comb in permutations(range(slot_num), len(tokens)):
             s = 0
-            for token, i in assignment.items():
-                s += self.run(i, token)
+            for i in range(len(tokens)):
+                s += self.run(comb[i], tokens[i])
 
             worst = min(worst, s)
             best = max(best, s)
