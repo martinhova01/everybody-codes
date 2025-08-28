@@ -1,7 +1,6 @@
 import time
-from itertools import permutations, cycle
-from functools import lru_cache
-from collections import Counter, defaultdict, deque
+from itertools import cycle
+from collections import deque
 
 
 class Solution:
@@ -24,25 +23,31 @@ class Solution:
                 if not data:
                     return i
             data.popleft()
-        
+
         return i
-    
-    def circle_pop(self, repeat, data: str):
+
+    def circle_pop(self, repeat, data: list[str]):
         data = data * repeat
+        first = deque(data[0 : len(data) // 2])
+        last = deque(data[len(data) // 2 :])
         color_cycle = cycle("RGB")
         i = 0
-        while data:
-            if i % 100 == 0:
-                print(i, len(data))
+        while len(first) + len(last):
             i += 1
             color = next(color_cycle)
-            if len(data) % 2 == 0:
-                if data[0] == color:
-                    data = data[0 : len(data) // 2] + data[len(data) // 2 + 1 :]
-            data = data[1:]
-        
+
+            # two pops
+            if (len(first) + len(last)) % 2 == 0 and first[0] == color:
+                last.popleft()
+                first.popleft()
+
+            # one pop
+            else:
+                if (len(first) + len(last)) % 2 != 0:
+                    first.append(last.popleft())
+                first.popleft()
+
         return i
-                
 
     def part2(self):
         data = list(self.read_data(2))
@@ -60,7 +65,6 @@ def main():
     print("---TEST---")
     print(f"part 1: {s.part1()}")
     print(f"part 2: {s.part2()}")
-    # print(f"part 3: {s.part3()}\n")
 
     s = Solution()
     print("---MAIN---")
