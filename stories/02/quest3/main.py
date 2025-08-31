@@ -1,6 +1,7 @@
 import time
 from collections import deque, defaultdict
 import re
+from PIL import Image
 
 
 class Die:
@@ -87,6 +88,16 @@ class Solution:
             self.rolls[id].append(self.dice[id].roll())
         return self.rolls[id][roll_nr]
 
+    def visualize_result(self, coins_collected, width, height):
+        if self.test:
+            return
+
+        img = Image.new("RGB", (width, height), "black")
+        pixels = img.load()
+        for x, y in coins_collected:
+            pixels[x, y] = (255, 255, 255)
+        img.save("out.png")
+
     def part3(self):
         data = self.read_data(3)
         dice_input, board_input = data.split("\n\n")
@@ -119,6 +130,8 @@ class Solution:
                         continue
                     coins_collected.add((x, y))
                     q.append((nx, ny, id, roll_nr + 1))
+
+        self.visualize_result(coins_collected, len(board[y]), len(board))
 
         return len(coins_collected)
 
