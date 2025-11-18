@@ -7,15 +7,15 @@ class ComplexNum:
         self.x = x
         self.y = y
 
-    def add(self, other):
+    def __add__(self, other):
         return ComplexNum(self.x + other.x, self.y + other.y)
 
-    def mult(self, other):
+    def __mul__(self, other):
         return ComplexNum(
             self.x * other.x - self.y * other.y, self.x * other.y + self.y * other.x
         )
 
-    def div(self, other):
+    def __truediv__(self, other):
         return ComplexNum(int(self.x / other.x), int(self.y / other.y))
 
     def __str__(self):
@@ -37,9 +37,9 @@ class Solution:
 
         res = ComplexNum(0, 0)
         for _ in range(3):
-            res = res.mult(res)
-            res = res.div(ComplexNum(10, 10))
-            res = res.add(A)
+            res *= res
+            res /= ComplexNum(10, 10)
+            res += A
 
         return res
 
@@ -47,9 +47,9 @@ class Solution:
 
         res = ComplexNum(0, 0)
         for _ in range(100):
-            res = res.mult(res)
-            res = res.div(ComplexNum(100_000, 100_000))
-            res = res.add(num)
+            res *= res
+            res /= ComplexNum(100_000, 100_000)
+            res += num
             if (
                 res.x <= -1_000_000
                 or res.x >= 1_000_000
@@ -64,25 +64,13 @@ class Solution:
         data = self.read_data(2)
         Ax, Ay = list(map(int, re.findall(r"-?\d+", data)))
         A = ComplexNum(Ax, Ay)
-        B = A.add(ComplexNum(1000, 1000))
+        B = A + ComplexNum(1000, 1000)
 
         points = set()
         for y in range(A.y, B.y + 1, 10):
             for x in range(A.x, B.x + 1, 10):
                 if self.is_valid(ComplexNum(x, y)):
                     points.add((x, y))
-
-        out = ""
-        for y in range(A.y, B.y + 1, 10):
-            for x in range(A.x, B.x + 1, 10):
-                if (x, y) in points:
-                    out += "x"
-                else:
-                    out += "."
-            out += "\n"
-
-        with open("out.txt", "w") as f:
-            f.write(out)
 
         return len(points)
 
@@ -90,25 +78,13 @@ class Solution:
         data = self.read_data(3)
         Ax, Ay = list(map(int, re.findall(r"-?\d+", data)))
         A = ComplexNum(Ax, Ay)
-        B = A.add(ComplexNum(1000, 1000))
+        B = A + ComplexNum(1000, 1000)
 
         points = set()
         for y in range(A.y, B.y + 1):
             for x in range(A.x, B.x + 1):
                 if self.is_valid(ComplexNum(x, y)):
                     points.add((x, y))
-
-        out = ""
-        for y in range(A.y, B.y + 1):
-            for x in range(A.x, B.x + 1):
-                if (x, y) in points:
-                    out += "x"
-                else:
-                    out += "."
-            out += "\n"
-
-        with open("out.txt", "w") as f:
-            f.write(out)
 
         return len(points)
 
