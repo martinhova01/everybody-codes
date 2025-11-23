@@ -1,5 +1,7 @@
 import time
 
+from collections import defaultdict
+
 
 class Solution:
     def __init__(self, test=False):
@@ -44,22 +46,25 @@ class Solution:
     def part3(self):
         data = self.read_data(3) * 1000
 
+        counts = defaultdict(int)
+        start, end = 0, 1000
+
+        for c in data[start : end + 1]:
+            counts[c] += 1
+
         s = 0
-        for i, c in enumerate(data):
-            if c.isupper():
-                continue
+        for mid in range(0, len(data)):
+            c = data[mid]
+            if c.islower():
+                s += counts[c.upper()]
 
-            j = i - 1
-            while j >= 0 and i - j <= 1000:
-                if data[j] == c.upper():
-                    s += 1
-                j -= 1
+            if mid >= 1000:
+                counts[data[start]] -= 1
+                start += 1
 
-            j = i + 1
-            while j < len(data) - 1 and j - i <= 1000:
-                if data[j] == c.upper():
-                    s += 1
-                j += 1
+            if end < len(data) - 1:
+                end += 1
+                counts[data[end]] += 1
 
         return s
 
