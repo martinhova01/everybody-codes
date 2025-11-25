@@ -16,61 +16,30 @@ class Solution:
         return open(filename).read()
 
     def part1(self):
-        data = [[int(c) for c in line] for line in self.read_data(1).split("\n")]
-        self.R = len(data)
-        self.C = len(data[0])
+        self.data = [[int(c) for c in line] for line in self.read_data(1).split("\n")]
+        self.R = len(self.data)
+        self.C = len(self.data[0])
 
-        visited = set()
-        q = deque([(0, 0)])
-        while q:
-            x, y = q.popleft()
-            if (x, y) in visited:
-                continue
-
-            visited.add((x, y))
-
-            for nx, ny in adjacent4(x, y):
-                if nx < 0 or nx >= self.C or ny < 0 or ny >= self.R:
-                    continue
-
-                if data[ny][nx] <= data[y][x]:
-                    q.append((nx, ny))
-
-        return len(visited)
+        return len(self.bfs([(0, 0)]))
 
     def part2(self):
-        data = [[int(c) for c in line] for line in self.read_data(2).split("\n")]
-        self.R = len(data)
-        self.C = len(data[0])
+        self.data = [[int(c) for c in line] for line in self.read_data(2).split("\n")]
+        self.R = len(self.data)
+        self.C = len(self.data[0])
 
+        return len(self.bfs([(0, 0), (self.C - 1, self.R - 1)]))
+
+    def bfs(self, start_points: list, part3=False):
         visited = set()
-        q = deque([(0, 0), (self.C - 1, self.R - 1)])
+        q = deque(start_points)
         while q:
             x, y = q.popleft()
             if (x, y) in visited:
                 continue
 
-            visited.add((x, y))
-
-            for nx, ny in adjacent4(x, y):
-                if nx < 0 or nx >= self.C or ny < 0 or ny >= self.R:
+            if part3:
+                if (x, y) in self.done:
                     continue
-
-                if data[ny][nx] <= data[y][x]:
-                    q.append((nx, ny))
-
-        return len(visited)
-
-    def bfs(self, start_x, start_y):
-        visited = set()
-        q = deque([(start_x, start_y)])
-        while q:
-            x, y = q.popleft()
-            if (x, y) in visited:
-                continue
-
-            if (x, y) in self.done:
-                continue
 
             visited.add((x, y))
 
@@ -90,15 +59,15 @@ class Solution:
 
         self.done = set()
         for _ in range(3):
-
             components = []
             for y in range(self.R):
                 for x in range(self.C):
                     if (x, y) in self.done:
                         continue
-                    components.append(self.bfs(x, y))
 
-            self.done.update(sorted(components, reverse=True, key=len)[0])
+                    components.append(self.bfs([(x, y)], part3=True))
+
+            self.done.update(max(components, key=len))
 
         return len(self.done)
 
