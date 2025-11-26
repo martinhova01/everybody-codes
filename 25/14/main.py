@@ -8,8 +8,34 @@ class Solution:
     def read_data(self, part):
         filename = f"testinput{part}.txt" if self.test else f"input{part}.txt"
         return open(filename).read()
-    
-    
+
+    def get_next_state(self, data):
+        new_data = []
+        s = 0
+        for y in range(self.R):
+            new_row = ""
+            for x in range(self.C):
+
+                num_active_neighbors = 0
+                for dx, dy in [(-1, -1), (1, -1), (1, 1), (-1, 1)]:
+                    nx, ny = x + dx, y + dy
+                    if nx < 0 or nx >= self.C or ny < 0 or ny >= self.R:
+                        continue
+                    if data[ny][nx] == "#":
+                        num_active_neighbors += 1
+
+                c = data[y][x]
+                if (c == "#" and num_active_neighbors % 2 == 1) or (
+                    c == "." and num_active_neighbors % 2 == 0
+                ):
+                    s += 1
+                    new_row += "#"
+                else:
+                    new_row += "."
+
+            new_data.append(new_row)
+
+        return (new_data, s)
 
     def part1(self):
         data = self.read_data(1).split("\n")
@@ -18,31 +44,7 @@ class Solution:
 
         res = 0
         for _ in range(10):
-            new_data = []
-            s = 0
-            for y in range(self.R):
-                new_row = ""
-                for x in range(self.C):
-
-                    num_active_neighbors = 0
-                    for dx, dy in [(-1, -1), (1, -1), (1, 1), (-1, 1)]:
-                        nx, ny = x + dx, y + dy
-                        if nx < 0 or nx >= self.C or ny < 0 or ny >= self.R:
-                            continue
-                        if data[ny][nx] == "#":
-                            num_active_neighbors += 1
-
-                    c = data[y][x]
-                    if (c == "#" and num_active_neighbors % 2 == 1) or (
-                        c == "." and num_active_neighbors % 2 == 0
-                    ):
-                        s += 1
-                        new_row += "#"
-                    else:
-                        new_row += "."
-
-                new_data.append(new_row)
-            data = new_data
+            data, s = self.get_next_state(data)
             res += s
 
         return res
@@ -54,31 +56,7 @@ class Solution:
 
         res = 0
         for _ in range(2025):
-            new_data = []
-            s = 0
-            for y in range(self.R):
-                new_row = ""
-                for x in range(self.C):
-
-                    num_active_neighbors = 0
-                    for dx, dy in [(-1, -1), (1, -1), (1, 1), (-1, 1)]:
-                        nx, ny = x + dx, y + dy
-                        if nx < 0 or nx >= self.C or ny < 0 or ny >= self.R:
-                            continue
-                        if data[ny][nx] == "#":
-                            num_active_neighbors += 1
-
-                    c = data[y][x]
-                    if (c == "#" and num_active_neighbors % 2 == 1) or (
-                        c == "." and num_active_neighbors % 2 == 0
-                    ):
-                        s += 1
-                        new_row += "#"
-                    else:
-                        new_row += "."
-
-                new_data.append(new_row)
-            data = new_data
+            data, s = self.get_next_state(data)
             res += s
 
         return res
@@ -101,33 +79,9 @@ class Solution:
 
         cycle = []
         seen = set()
-        res = 0
         for round in range(1000000000):
-            new_data = []
-            s = 0
-            for y in range(self.R):
-                new_row = ""
-                for x in range(self.C):
+            data, s = self.get_next_state(data)
 
-                    num_active_neighbors = 0
-                    for dx, dy in [(-1, -1), (1, -1), (1, 1), (-1, 1)]:
-                        nx, ny = x + dx, y + dy
-                        if nx < 0 or nx >= self.C or ny < 0 or ny >= self.R:
-                            continue
-                        if data[ny][nx] == "#":
-                            num_active_neighbors += 1
-
-                    c = data[y][x]
-                    if (c == "#" and num_active_neighbors % 2 == 1) or (
-                        c == "." and num_active_neighbors % 2 == 0
-                    ):
-                        s += 1
-                        new_row += "#"
-                    else:
-                        new_row += "."
-
-                new_data.append(new_row)
-            data = new_data
             if self.check_pattern(data):
 
                 if tuple(data) in seen:
@@ -142,8 +96,8 @@ class Solution:
 
                     num_cycles = rounds_left // cycle_length
                     res = cycle_sum * num_cycles
-                    rounds_left = rounds_left % cycle_length
 
+                    rounds_left = rounds_left % cycle_length
                     for i in range(len(cycle)):
                         if rounds_left < cycle[i][0] - first_round:
                             break
