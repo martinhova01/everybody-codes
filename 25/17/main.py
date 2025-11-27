@@ -102,9 +102,7 @@ class Solution:
                         continue
 
                     weight = 0
-                    if nc == "S":
-                        weight = 0
-                    else:
+                    if nc != "S":
                         weight = int(nc)
 
                     G.add_edge((x, y), (nx, ny), w=weight)
